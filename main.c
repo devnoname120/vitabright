@@ -7,7 +7,7 @@
 
 void _start() __attribute__ ((weak, alias ("module_start")));
 	
-static tai_hook_ref_t hook_get_max_brightness;
+//static tai_hook_ref_t hook_get_max_brightness;
 static tai_hook_ref_t hook_set_brightness;
 
 #define DEVICE_BASE         (0xE0000000)
@@ -57,16 +57,16 @@ int brightness_adjust(void)
 
 
 
-int get_max_brightness(uint *brightness)
+/*int get_max_brightness(uint *brightness)
 {
 	int ret = TAI_CONTINUE(int, hook_get_max_brightness, brightness);
 
 	uint brightness_ker;
 	ksceKernelMemcpyUserToKernel(&brightness_ker, brightness, sizeof(uint));
 	
-	LOG("brightness = %u, get_brightness() = %d\n", brightness_ker, ret);
+	//LOG("brightness = %u, get_brightness() = %d\n", brightness_ker, ret);
 	return ret;
-}
+}*/
 
 int set_brightness(uint brightness)
 {
@@ -92,7 +92,7 @@ int set_brightness(uint brightness)
 
 int module_start(SceSize argc, const void *args)
 {
-	SceKernelAllocMemBlockKernelOpt opt = {0};
+	/*SceKernelAllocMemBlockKernelOpt opt = {0};
 	opt.size = sizeof(opt);
 	opt.attr = 2;
 	opt.paddr = IFTU0_BASE;
@@ -104,17 +104,17 @@ int module_start(SceSize argc, const void *args)
 	if (ret < 0)
 		LOG("GetMemBlock ret=0x%08X", ret);
 		
-	
+	*/
 	LOG("vitabright started...\n");	
 
-	ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_get_max_brightness,
+	/*ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_get_max_brightness,
                                  "SceAVConfig",
                                  TAI_ANY_LIBRARY,
                                  0x6ABA67F4,
                                  get_max_brightness);
 	LOG("ret: 0x%08X\n", ret);
-
-	ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_set_brightness,
+	*/
+	int ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_set_brightness,
                                  "SceAVConfig",
                                  TAI_ANY_LIBRARY,
                                  0xE0C1B743,
