@@ -1,0 +1,9 @@
+modules:
+  SceDisplay:
+   nid: 0x3F05296F
+   libraries:
+      SceDisplayForDriver:
+        functions:
+          SceDisplayForDriver_0x9E3C6DC6: 0x9E3C6DC6
+        kernel: true
+        nid: 0x9FED47AC
