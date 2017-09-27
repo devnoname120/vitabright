@@ -4,8 +4,9 @@
 #include <psp2kern/io/fcntl.h>
 
 #include "log.h"
-#include "lookupNew.h"
 
+// Symbol in the generated lookupNew.c
+extern unsigned char lookupNew[357];
 
 int ksceDisplaySetBrightness(int unk, unsigned int brightness);
 

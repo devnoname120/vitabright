@@ -47,6 +47,6 @@ if __name__=='__main__':
     lookup[0:lookup.shape[0]-1,:] = lookup_sane
     lookup = lookup.astype(int)
     
-    numpy.savetxt('lookupNew.txt', lookup, fmt='%.d')
+    # numpy.savetxt('lookupNew.txt', lookup, fmt='%.d')
 
-    writeLookupAsC('lookupNew.h', lookup)
+    writeLookupAsC(argv[2], lookup)

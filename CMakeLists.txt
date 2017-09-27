@@ -30,7 +30,7 @@ link_directories(
 add_executable(vitabright
   main.c
   log.c
-  ${PROJECT_RESOURCES}
+  lookupNew.c
 )
 
 
@@ -55,3 +55,8 @@ vita_create_self(vitabright.skprx vitabright
   CONFIG ${CMAKE_SOURCE_DIR}/vitabright.yml
 )
 
+add_custom_command(
+	OUTPUT lookupNew.c
+	DEPENDS ${CMAKE_SOURCE_DIR}/build_lookup.py ${CMAKE_SOURCE_DIR}/lookupOrig.txt
+	COMMAND python3 ${CMAKE_SOURCE_DIR}/build_lookup.py ${CMAKE_SOURCE_DIR}/lookupOrig.txt lookupNew.c
+)
