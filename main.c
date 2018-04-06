@@ -5,8 +5,12 @@
 
 #include "log.h"
 
-// Symbol in the generated lookupNew.c
-extern unsigned char lookupNew[357];
+#define LUT_FILE1 "ur0:tai/vitabright_lut.txt"
+#define LUT_FILE2 "ux0:tai/vitabright_lut.txt"
+#define LUT_SIZE (357)
+#define LUT_LINE_SIZE (21)
+
+unsigned char lookupNew[LUT_SIZE] = {0};
 
 int ksceDisplaySetBrightness(int unk, unsigned int brightness);
 
@@ -19,7 +23,7 @@ static tai_hook_ref_t hook_set_brightness;
 
 	uint brightness_ker;
 	ksceKernelMemcpyUserToKernel(&brightness_ker, brightness, sizeof(uint));
-	
+
 	//LOG("brightness = %u, get_brightness() = %d\n", brightness_ker, ret);
 	return ret;
 }*/
@@ -27,7 +31,7 @@ static tai_hook_ref_t hook_set_brightness;
 int set_brightness(uint brightness)
 {
 	uint mod_brightness;
-	
+
 	if (brightness < 100)
 		mod_brightness = 1;
 	else
@@ -35,15 +39,92 @@ int set_brightness(uint brightness)
 	//int ret = TAI_CONTINUE(uint, hook_set_brightness, mod_brightness);
 
 	LOG("set_brightness(%u), corrected to %u\n", brightness, mod_brightness);
-	
+
 	ksceDisplaySetBrightness(0, mod_brightness);
+	return 0;
+}
+
+int is_hex(unsigned char c) {
+	return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F');
+}
+
+int parse_hex_digit(unsigned char c) {
+	if (c < 'A') {
+		return c - '0';
+	} else {
+		return c - 'A' + 10;
+	}
+}
+
+int hex_to_int(unsigned char c[2]) {
+	if (!is_hex(c[0]) || !is_hex(c[1])) {
+		return -1;
+	}
+
+	return 16*parse_hex_digit(c[0]) + parse_hex_digit(c[1]);
+}
+
+int parse_hex(SceUID fd) {
+	unsigned char hex_buf[2] = {0};
+
+	int ret = ksceIoRead(fd, hex_buf, 2);
+	if (ret != 2)
+		return ret;
+
+	// Note: would be easier to use strtoul but libc is annoying to use in Kernel, and I don't want to ship libk
+	return hex_to_int(hex_buf);
+}
+
+int parse_line(SceUID fd, unsigned char lut_line[LUT_LINE_SIZE]) {
+	for (int i=0; i < LUT_LINE_SIZE; i++) {
+		int val = parse_hex(fd);
+		if (val < 0) {
+			return val;
+		}
+
+		lut_line[i] = (unsigned char) val;
+
+		char c = '\0';
+		if (ksceIoRead(fd, &c, 1) != 1) {
+			return -1;
+		}
+
+		// Space after each number, except last number from line where it's a newline character
+		if (i != LUT_LINE_SIZE-1) {
+			if (c != ' ')
+				return -1;
+		} else {
+			if (c != '\n')
+				return -1;
+		}
+	}
+
+	return 0;
+}
+
+int parse_lut() {
+	SceUID fd = ksceIoOpen(LUT_FILE1, SCE_O_RDONLY, 6);
+	if (fd < 0) {
+		fd = ksceIoOpen(LUT_FILE2, SCE_O_RDONLY, 6);
+
+		if (fd < 0)
+			return fd;
+	}
+
+	for (int l=0; l < (LUT_SIZE / LUT_LINE_SIZE); l++) {
+		int ret = parse_line(fd, &(lookupNew[l * LUT_LINE_SIZE]));
+		if (ret < 0)
+			return ret;
+	}
+
+	ksceIoClose(fd);
 	return 0;
 }
 
 void _start() __attribute__ ((weak, alias ("module_start")));
 int module_start(SceSize argc, const void *args)
 {
-	LOG("vitabright started...\n");	
+	LOG("vitabright started...\n");
 
 	/*ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_get_max_brightness,
                                  "SceAVConfig",
@@ -52,28 +133,41 @@ int module_start(SceSize argc, const void *args)
                                  get_max_brightness);
 	LOG("ret: 0x%08X\n", ret);
 	*/
-	int ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_set_brightness,
-                                 "SceAVConfig",
-                                 TAI_ANY_LIBRARY,
-                                 0xE0C1B743,
-                                 set_brightness);
-	LOG("hook set_brightness: 0x%08X\n", ret);
-	
+	// int ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_set_brightness,
+    //                              "SceAVConfig",
+    //                              TAI_ANY_LIBRARY,
+    //                              0xE0C1B743,
+    //                              set_brightness);
+	// LOG("hook set_brightness: 0x%08X\n", ret);
+
+	int ret = parse_lut();
+	if (ret < 0) {
+		LOG("brightness table parsing failure\n");
+		return ret;
+	}
+
+	// for (int i=0; i < (LUT_SIZE/LUT_LINE_SIZE); i++) {
+	// 	for (int j=0; j < LUT_LINE_SIZE; j++) {
+	// 		LOG("%02X ", lookupNew[i*LUT_LINE_SIZE + j]);
+	// 	}
+	// 	LOG("\n");
+	// }
+
 	tai_module_info_t info;
 	info.size = sizeof(tai_module_info_t);
 	ret = taiGetModuleInfoForKernel(KERNEL_PID, "SceOled", &info);
 	LOG("getmodninfo: 0x%08X\n", ret);
 	LOG("modid: 0x%08X\n", info.modid);
-	
+
 	if (sizeof(lookupNew) != 357) {
 		LOG("size mismatch! Skipping...\n");
 		return SCE_KERNEL_START_SUCCESS;
 	}
 
 	LOG("Size ok, hooking...\n");
-	ret = taiInjectDataForKernel(KERNEL_PID, info.modid, 1, 0x1E00, lookupNew, sizeof(lookupNew));	
+	ret = taiInjectDataForKernel(KERNEL_PID, info.modid, 1, 0x1E00, lookupNew, sizeof(lookupNew));
 	LOG("injectdata: 0x%08X\n", ret);
-	
+
 	return SCE_KERNEL_START_SUCCESS;
 }
 

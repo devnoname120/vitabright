@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-#define LOG_PATH "ux0:data/"
+#define LOG_PATH "ur0:data/"
 #define LOG_FILE LOG_PATH "vitabright_log.txt"
 
 void log_reset();
