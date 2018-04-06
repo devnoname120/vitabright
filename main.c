@@ -165,7 +165,7 @@ int module_start(SceSize argc, const void *args)
 	}
 
 	LOG("Size ok, hooking...\n");
-	ret = taiInjectDataForKernel(KERNEL_PID, info.modid, 1, 0x1E00, lookupNew, sizeof(lookupNew));
+	ret = taiInjectDataForKernel(KERNEL_PID, info.modid, 0, 0x1E00, lookupNew, sizeof(lookupNew));
 	LOG("injectdata: 0x%08X\n", ret);
 
 	return SCE_KERNEL_START_SUCCESS;
