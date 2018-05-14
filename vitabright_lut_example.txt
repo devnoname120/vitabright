@@ -1,0 +1,31 @@
+[delete any lines in brackets if you want to use this config]
+[changing the first 3 values to equal values will add a f.lux-isk effect rendering vitaflux useless as this runs outside games and is configureable and adjustable]
+[changing the 00 2f to ff ff will add a thick white filter to the current filter making the flashlight setting white instead of red]
+[should be 17 lines]
+[if only 16 lines then the 2 highest will be the same values]
+[maximum brightness level]
+[setting all to 255 turns your system into a fairly good flashlight]
+FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+CC CC EA D0 D8 CB C3 CB BB E2 E4 DF D6 CE D3 FA ED E6 2F 00 2F
+C9 C9 E6 D1 D9 CC C3 CB BC E2 E4 DF D6 CC D3 FA ED E6 2F 00 2F
+C5 C5 E1 D2 D9 CC C4 CD BE E2 E3 DF D7 CC D3 FA ED E6 2F 00 2F
+[high power consuming games will lock the brightness at this value for maximum]
+[anything higher should be the highest brightness levels]
+C3 C3 DF D3 DA CD C5 CD BE E2 E3 DF D6 CA D3 FA ED E6 2F 00 2F
+C1 C1 DC D3 DA CE C5 CD BE E3 E3 E0 D7 CA D3 FA ED E6 2F 00 2F
+BF BF DA D4 DB CE C6 CD BF E3 E3 E1 D7 CA D3 FA ED E6 2F 00 2F
+BD BD D7 D5 DB CF C6 CE C0 E4 E4 E1 D7 C8 D3 FA ED E6 2F 00 2F
+[midpoint for brightness]
+[everything below i have set for indoors and night]
+[everything above i have set for outside in daylight]
+5B 5B 75 D5 DB CF C7 CE C0 E3 E3 E1 D8 C7 D3 FA ED E6 2F 00 2F
+59 59 72 D5 DB CF C8 CF C2 E3 E3 E1 D9 C7 D3 FA ED E6 2F 00 2F
+57 56 6F D6 DD D1 C7 CE C1 E4 E3 E2 D9 C6 D3 FA ED E6 2F 00 2F
+54 53 6B D7 DE D2 C8 CE C2 E4 E3 E2 D9 C3 D3 FA ED E6 2F 00 2F
+52 51 69 D6 DD D1 CA CF C3 E4 E3 E3 DA C2 D3 FA ED E6 2F 00 2F
+4F 4E 65 D7 DE D2 CB CF C5 E5 E3 E3 DA BF D3 FA ED E6 2F 00 2F
+4D 4C 62 D7 DD D2 CB D0 C6 E5 E1 E3 DA BD D3 FA ED E6 2F 00 2F
+49 48 5D D9 DF D5 CB CF C5 E5 E0 E4 DC B8 D4 FA ED E6 2F 00 2F
+[minimum brightness level]
+[only the first 3 values are changed to make minimum easier on your eyes at night]
+02 00 12 DC E1 D8 D1 CF CD E6 D9 E3 CD 8C CB F0 9C F9 2F 00 2F
