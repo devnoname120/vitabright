@@ -37,6 +37,7 @@ target_link_libraries(vitabright
   SceDisplayForDriver_stub
   taihenForKernel_stub
   SceIofilemgrForDriver_stub
+  SceOledForDriver_stub
   #k
   gcc
   SceSysclibForDriver_stub

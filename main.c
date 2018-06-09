@@ -160,6 +160,8 @@ int module_start(SceSize argc, const void *args)
 	lut_inject = taiInjectDataForKernel(KERNEL_PID, info.modid, 0, 0x1E00, lookupNew, sizeof(lookupNew));
 	LOG("injectdata: 0x%08X\n", ret);
 
+	ksceOledSetBrightness(ksceOledGetBrightness());
+
 	return SCE_KERNEL_START_SUCCESS;
 }
 
