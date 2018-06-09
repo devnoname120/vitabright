@@ -29,6 +29,7 @@ link_directories(
 
 add_executable(vitabright
   main.c
+  parser.c
   log.c
 )
 
