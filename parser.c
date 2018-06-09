@@ -22,6 +22,8 @@ int hex_to_int(unsigned char c[2])
 {
 	if (!is_hex(c[0]) || !is_hex(c[1]))
 	{
+		if (c[0] == '#')
+			return -2;
 		return -1;
 	}
 
@@ -45,6 +47,19 @@ int parse_line(SceUID fd, unsigned char lut_line[LUT_LINE_SIZE])
 	for (int i = 0; i < LUT_LINE_SIZE; i++)
 	{
 		int val = parse_hex(fd);
+
+		// This is a comment, skip line
+		if (val == -2) {
+			char c = '\0';
+			
+			int read = 1;
+			while (c != '\n' && read == 1) {
+				read = ksceIoRead(fd, &c, 1);
+			}
+
+			return -2;
+		}
+
 		if (val < 0)
 		{
 			return val;
@@ -88,6 +103,13 @@ int parse_lut(unsigned char lookupNew[LUT_SIZE])
 	for (int l = 0; l < (LUT_SIZE / LUT_LINE_SIZE); l++)
 	{
 		int ret = parse_line(fd, &(lookupNew[l * LUT_LINE_SIZE]));
+		
+		// Skipped line because is comment
+		if (ret == -2) {
+			--l;
+			continue;
+		}
+
 		if (ret < 0)
 			return ret;
 	}
