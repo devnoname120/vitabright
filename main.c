@@ -16,20 +16,17 @@ int ksceOledGetBrightness();
 int ksceOledSetBrightness(unsigned int brightness);
 int ksceDisplaySetBrightness(int unk, unsigned int brightness);
 
-//static tai_hook_ref_t hook_get_max_brightness;
+static tai_hook_ref_t hook_power_get_max_brightness = 0;
 SceUID lut_inject = -1;
-static tai_hook_ref_t hook_set_brightness;
 
-/*int get_max_brightness(uint *brightness)
+unsigned int power_get_max_brightness()
 {
-	int ret = TAI_CONTINUE(int, hook_get_max_brightness, brightness);
-
-	uint brightness_ker;
-	ksceKernelMemcpyUserToKernel(&brightness_ker, brightness, sizeof(uint));
-
-	//LOG("brightness = %u, get_brightness() = %d\n", brightness_ker, ret);
-	return ret;
-}*/
+	if (hook_power_get_max_brightness != 0) {
+		return TAI_CONTINUE(unsigned int, hook_power_get_max_brightness);
+	}
+	
+	return 65536;
+}
 
 int is_hex(unsigned char c)
 {
@@ -131,13 +128,13 @@ int module_start(SceSize argc, const void *args)
 {
 	LOG("vitabright started...\n");
 
-	/*ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_get_max_brightness,
-                                 "SceAVConfig",
-                                 TAI_ANY_LIBRARY,
-                                 0x6ABA67F4,
-                                 get_max_brightness);
-	LOG("ret: 0x%08X\n", ret);
-	*/
+	// int ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_power_get_max_brightness,
+	// 							 "ScePower",
+	// 							 TAI_ANY_LIBRARY,
+	// 							 0xD8759B55,
+	// 							 power_get_max_brightness);
+	// LOG("ret: 0x%08X\n", ret);
+	
 
 	int ret = parse_lut();
 	if (ret < 0)
