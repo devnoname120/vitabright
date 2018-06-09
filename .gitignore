@@ -3,3 +3,5 @@ vitabright_log.txt
 
 lookupNew.h
 lookupNew.txt
+.vscode/.cmaketools.json
+.vscode/settings.json
