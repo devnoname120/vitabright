@@ -12,6 +12,8 @@
 
 unsigned char lookupNew[LUT_SIZE] = {0};
 
+int ksceOledGetBrightness();
+int ksceOledSetBrightness(unsigned int brightness);
 int ksceDisplaySetBrightness(int unk, unsigned int brightness);
 
 //static tai_hook_ref_t hook_get_max_brightness;
