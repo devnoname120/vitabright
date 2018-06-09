@@ -2,16 +2,19 @@
     "configurations": [
         {
             "name": "null",
-            "includePath": [],
+            "includePath": [
+                "/usr/local/vitasdk/arm-vita-eabi/include"
+            ],
             "defines": [],
             "browse": {
-                "path": [
-                    "${workspaceRoot}"
-                ],
+                "path": [],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "/usr/local/vitasdk/bin/arm-vita-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 3
