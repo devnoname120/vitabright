@@ -29,22 +29,6 @@ static tai_hook_ref_t hook_set_brightness;
 	return ret;
 }*/
 
-int set_brightness(uint brightness)
-{
-	uint mod_brightness;
-
-	if (brightness < 100)
-		mod_brightness = 1;
-	else
-		mod_brightness = (brightness - 19) * (65536) / (65536 - 19);
-	//int ret = TAI_CONTINUE(uint, hook_set_brightness, mod_brightness);
-
-	LOG("set_brightness(%u), corrected to %u\n", brightness, mod_brightness);
-
-	ksceDisplaySetBrightness(0, mod_brightness);
-	return 0;
-}
-
 int is_hex(unsigned char c)
 {
 	return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F');
@@ -152,12 +136,6 @@ int module_start(SceSize argc, const void *args)
                                  get_max_brightness);
 	LOG("ret: 0x%08X\n", ret);
 	*/
-	// int ret = taiHookFunctionExportForKernel(KERNEL_PID, &hook_set_brightness,
-	//                              "SceAVConfig",
-	//                              TAI_ANY_LIBRARY,
-	//                              0xE0C1B743,
-	//                              set_brightness);
-	// LOG("hook set_brightness: 0x%08X\n", ret);
 
 	int ret = parse_lut();
 	if (ret < 0)
@@ -165,13 +143,6 @@ int module_start(SceSize argc, const void *args)
 		LOG("brightness table parsing failure\n");
 		return ret;
 	}
-
-	// for (int i=0; i < (LUT_SIZE/LUT_LINE_SIZE); i++) {
-	// 	for (int j=0; j < LUT_LINE_SIZE; j++) {
-	// 		LOG("%02X ", lookupNew[i*LUT_LINE_SIZE + j]);
-	// 	}
-	// 	LOG("\n");
-	// }
 
 	tai_module_info_t info;
 	info.size = sizeof(tai_module_info_t);
