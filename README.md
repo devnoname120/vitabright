@@ -1,7 +1,7 @@
 # vitabright
 
 vitabright is a plugin enabling you to use a custom gamma table, and thus decrease brightness below the minimum, and increase it above the maximum.
-**Vita OLED and 3.60 only**.
+**This plugin is only compatible with OLED model Vita consoles. Tested to be functional on 3.60 Ensō and now 3.68 h-encore**.
 
 ## Installation
 
