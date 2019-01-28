@@ -29,20 +29,23 @@ link_directories(
 
 add_executable(vitabright
   main.c
-  parser.c
   log.c
+  oled/parser.c
+  oled/hooks.c
+  lcd/hooks.c
 )
 
 
 target_link_libraries(vitabright
   SceDisplayForDriver_stub
   taihenForKernel_stub
+  taihenModuleUtils_stub
   SceIofilemgrForDriver_stub
-  SceOledForDriver_stub
   #k
   gcc
   SceSysclibForDriver_stub
   SceSysmemForDriver_stub
+  SceSysrootForDriver_stub
   #SceLibKernel_stub
 )
 
