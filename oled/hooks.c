@@ -47,7 +47,7 @@ void oled_enable_hooks() {
   unsigned int sw_version = ksceKernelSysrootGetSystemSwVersion();
   switch (sw_version >> 16) {
   case 0x360:
-  case 0x350:
+  case 0x365:
   case 0x367:
   case 0x368:
   case 0x369:
