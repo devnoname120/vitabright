@@ -12,9 +12,24 @@ static SceUID lcd_table_inject = -1;
 //                                             77,  88,  100, 114, 129, 147,
 //                                             166, 182, 203, 227, 255};
 
-// Generated using build_values.py
 static uint8_t lcd_brightness_values[17] = {
-    5, 9, 14, 22, 30, 41, 52, 66, 81, 97, 115, 134, 155, 178, 202, 227, 255,
+    1,
+    3,
+    5,
+    8,
+    13,
+    20,
+    29,
+    41,
+    57,
+    76,
+    95,
+    116,
+    137,
+    161,
+    190,
+    220,
+    255
 };
 
 int (*ksceLcdGetBrightness)();
@@ -34,9 +49,6 @@ void lcd_enable_hooks() {
 
   if (ret < 0)
     return;
-
-  tai_module_info_t shell_info;
-  shell_info.size = sizeof(shell_info);
 
   uint32_t lcd_table_off = 0;
   size_t ksceLcdGetBrightness_addr = 0;
