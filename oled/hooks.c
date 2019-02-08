@@ -14,10 +14,28 @@ static SceUID lut_inject = -1;
 int (*ksceOledGetBrightness)() = NULL;
 int (*ksceOledSetBrightness)(unsigned int brightness) = NULL;
 
+static tai_hook_ref_t oled_set_brightness_ref = -1;
+
 int module_get_offset(SceUID pid, SceUID modid, int segidx, size_t offset,
                       uintptr_t *addr);
 
 int ksceKernelSysrootGetSystemSwVersion(void);
+
+
+int hook_ksceOledSetBrightness(unsigned int brightness) {
+  // Trying to dim screen after inactivity
+  if (brightness == 1) {
+    int old_level = ksceOledGetBrightness();
+
+    // HACK: In modified vitabright_lut.txt, it corresponds to the line of screen dimmed after inactivity
+    if (old_level <= 16384) {
+      // Do nothing because it would increase brightness
+      return TAI_CONTINUE(int, oled_set_brightness_ref, old_level);
+    }
+  }
+
+  return TAI_CONTINUE(int, oled_set_brightness_ref, brightness);
+}
 
 void oled_enable_hooks() {
   int ret = parse_lut(lookupNew);
@@ -85,8 +103,13 @@ void oled_enable_hooks() {
   if (ksceOledGetBrightness != NULL && ksceOledSetBrightness != NULL &&
       res_offset1 >= 0 && res_offset2 >= 0) {
     // Note: I'm calling by offset instead of importing them
-    // because importing LCD module on OLED device prevents module from loading
+    // because importing OLED module on LCD devices prevents vitabright from loading
     ksceOledSetBrightness(ksceOledGetBrightness());
+  }
+
+  int res_hook = taiHookFunctionExportForKernel(KERNEL_PID, &oled_set_brightness_ref, "SceOled", TAI_ANY_LIBRARY, 0xF9624C47, hook_ksceOledSetBrightness);
+  if (res_hook < 0) {
+    LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", res_hook);
   }
 }
 
