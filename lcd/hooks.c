@@ -108,7 +108,7 @@ void lcd_enable_hooks() {
   }
 
   LOG("[LCD] OS version: 0x%08X\n, table offset: 0x%08X, ksceLcdGetBrightness_addr: 0x%08X, ksceLcdSetBrightness_addr: 0x%08X\n",
-    sw_version, lcd_table_off, ksceLcdGetBrightness_addr, ksceLcdSetBrightness_addr);
+    sw_version, (unsigned int)lcd_table_off, ksceLcdGetBrightness_addr, ksceLcdSetBrightness_addr);
 
   lcd_table_inject = taiInjectDataForKernel(
       KERNEL_PID, info.modid, 0, lcd_table_off, // 0x1BA0?

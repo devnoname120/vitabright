@@ -83,7 +83,7 @@ void oled_enable_hooks() {
   }
 
   LOG("[OLED] OS version: 0x%08X\n, table offset: 0x%08X, ksceOledGetBrightness_addr: 0x%08X, ksceOledSetBrightness_addr: 0x%08X\n",
-  sw_version, oled_lut_off, ksceOledGetBrightness_addr, ksceOledSetBrightness_addr);
+  sw_version, (unsigned int)oled_lut_off, ksceOledGetBrightness_addr, ksceOledSetBrightness_addr);
 
   lut_inject = taiInjectDataForKernel(KERNEL_PID, info.modid, 0, oled_lut_off,
                                       lookupNew, sizeof(lookupNew));
