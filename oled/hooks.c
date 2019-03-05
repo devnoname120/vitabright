@@ -87,7 +87,7 @@ void oled_enable_hooks() {
 
   lut_inject = taiInjectDataForKernel(KERNEL_PID, info.modid, 0, oled_lut_off,
                                       lookupNew, sizeof(lookupNew));
-  LOG("[OLED] injectdata: 0x%08X\n", ret);
+  LOG("[OLED] injectdata: 0x%08X\n", lut_inject);
 
   int res_offset1 =
       module_get_offset(KERNEL_PID, info.modid, 0, ksceOledGetBrightness_addr,

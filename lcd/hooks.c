@@ -113,7 +113,7 @@ void lcd_enable_hooks() {
   lcd_table_inject = taiInjectDataForKernel(
       KERNEL_PID, info.modid, 0, lcd_table_off, // 0x1BA0?
       lcd_brightness_values, sizeof(lcd_brightness_values));
-  LOG("[LCD] injectdata: 0x%08X\n", ret);
+  LOG("[LCD] injectdata: 0x%08X\n", lcd_table_inject);
 
   int res_offset1 =
       module_get_offset(KERNEL_PID, info.modid, 0, ksceLcdGetBrightness_addr,
