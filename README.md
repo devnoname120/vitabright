@@ -15,4 +15,9 @@ vitabright is a plugin enabling you to use a custom gamma table, and thus decrea
 - You can customize the gamma table that vitabright uses for OLED screen (PS Vita 1000). Open the file `vitabright_lut.txt` and modify it according to your needs.
 - Note that while there is also a file named `vitabright_lut_orig.txt`, it's not used by vitabright and it's only here for informational purposes.
 
+## OLED gamma table explanations
+
+https://github.com/devnoname120/vitabright/wiki/What-is-the-format-of-the-OLED-gamma-table%3F
+
+----------------------
 Thanks to xyz, yifanlu, and xerpi for their help.
