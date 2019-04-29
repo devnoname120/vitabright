@@ -6,8 +6,10 @@ vitabright is a plugin enabling you to use a custom gamma table, and thus decrea
 ## Installation
 
 - Download the latest version from the [Releases section](https://github.com/devnoname120/vitabright/releases).
-- Extract it to `ur0:/tai/` on your Vita.
+- Extract the files to `ur0:/tai/` on your Vita.
 - Add `ur0:/tai/vitabright.skprx` below `*KERNEL` in the `ur0:/tai/config.txt` file.
+
+**Important note**: If you have a folder `ux0:/tai` on your memory stick, it will prevent plugins in `ur0:/tai` from loading. In order to fix this, delete the folder `ux0:/tai`.
 
 ## Usage
 
