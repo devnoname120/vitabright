@@ -1,6 +1,6 @@
 # vitabright
 
-vitabright is a plugin enabling you to use a custom gamma table, and thus decrease brightness below the minimum, and increase it above the maximum.
+Vitabright is a plugin enabling you to alter the luminosity levels of your PS Vita. It thus allows you to decrease the brightness level below the minimum, and increase it above the maximum.
 **This plugin is compatible with both OLED (PS Vita 1000) and LCD (PS Vita 2000) models. Tested to be functional on 3.60 Ensō, 3.65 h-encore, 3.67 h-encore and 3.68 h-encore**.
 
 ## Installation
@@ -14,7 +14,7 @@ vitabright is a plugin enabling you to use a custom gamma table, and thus decrea
 ## Usage
 
 - Once vitabright is installed and your Vita is restarted, it will automatically work. Just open the brightness settings and move the slider.
-- You can customize the gamma table that vitabright uses for OLED screen (PS Vita 1000). Open the file `vitabright_lut.txt` and modify it according to your needs.
+- You can customize the gamma table that vitabright uses for OLED screens (PS Vita 1000): open the file `vitabright_lut.txt` and modify it according to your needs. **Note**: for now, you cannot tweak the luminosity levels of LCD screens (PS Vita 2000) without recompiling the plugin (for advanced users).
 - Note that while there is also a file named `vitabright_lut_orig.txt`, it's not used by vitabright and it's only here for informational purposes.
 
 **Important note**: If you want to use FileZilla for transferring the file `vitabright_lut_orig.txt`, you'll first need to [change the transfer type from `Auto` to `Binary`](https://stackoverflow.com/a/555003) or it can prevent vitabright from parsing it correctly.
