@@ -3,6 +3,8 @@
 Vitabright is a plugin enabling you to alter the luminosity levels of your PS Vita. It thus allows you to decrease the brightness level below the minimum, and increase it above the maximum.
 **This plugin is compatible with both OLED (PS Vita 1000) and LCD (PS Vita 2000) models. Tested to be functional on 3.60 Ensō, 3.65 h-encore, 3.67 h-encore and 3.68 h-encore**.
 
+**Important note**: While most OLED screens work with vitabright, **some OLED screens** (PS Vita 1000) don't work with it. It seems that their gamma table isn't overridden properly. See issue [#13](https://github.com/devnoname120/vitabright/issues/13) for more information. 
+
 ## Installation
 
 - Download the latest version from the [Releases section](https://github.com/devnoname120/vitabright/releases).
