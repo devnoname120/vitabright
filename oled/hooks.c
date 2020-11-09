@@ -13,6 +13,7 @@ static SceUID lut_inject = -1;
 
 int (*ksceOledGetBrightness)() = NULL;
 int (*ksceOledSetBrightness)(unsigned int brightness) = NULL;
+int (*ksceOledGetDDB)(uint16_t *supplier_id, uint16_t *supplier_elective_data) = NULL;
 
 static tai_hook_ref_t oled_set_brightness_ref = -1;
 
@@ -63,6 +64,7 @@ void oled_enable_hooks() {
   uint32_t oled_lut_off = 0;
   size_t ksceOledGetBrightness_addr = 0;
   size_t ksceOledSetBrightness_addr = 0;
+  size_t ksceOledGetDDB_addr = 0;
 
   unsigned int sw_version = ksceKernelSysrootGetSystemSwVersion();
   switch (sw_version >> 16) {
@@ -75,6 +77,7 @@ void oled_enable_hooks() {
     oled_lut_off = 0x1E00;
     ksceOledGetBrightness_addr = 0x12BC | THUMB_BIT;
     ksceOledSetBrightness_addr = 0x0F44 | THUMB_BIT;
+    ksceOledGetDDB_addr = 0x054C | THUMB_BIT;
     break;
   }
   default: // Not supported
@@ -82,8 +85,8 @@ void oled_enable_hooks() {
     return;
   }
 
-  LOG("[OLED] OS version: 0x%08X\n, table offset: 0x%08X, ksceOledGetBrightness_addr: 0x%08X, ksceOledSetBrightness_addr: 0x%08X\n",
-  sw_version, (unsigned int)oled_lut_off, ksceOledGetBrightness_addr, ksceOledSetBrightness_addr);
+  LOG("[OLED] OS version: 0x%08X\n, table offset: 0x%08X, ksceOledGetBrightness_addr: 0x%08X, ksceOledSetBrightness_addr: 0x%08X ksceOledGetDDB_addr: 0x%08X\n",
+  sw_version, (unsigned int)oled_lut_off, ksceOledGetBrightness_addr, ksceOledSetBrightness_addr, ksceOledGetDDB_addr);
 
   lut_inject = taiInjectDataForKernel(KERNEL_PID, info.modid, 0, oled_lut_off,
                                       lookupNew, sizeof(lookupNew));
@@ -99,10 +102,29 @@ void oled_enable_hooks() {
   int res_offset2 =
       module_get_offset(KERNEL_PID, info.modid, 0, ksceOledSetBrightness_addr,
                         (uintptr_t *)&ksceOledSetBrightness);
-
   if (res_offset2 < 0) {
     LOG("[OLED] module_get_offset2: 0x%08X\n", res_offset2);
   }
+
+  int res_offset3 =
+      module_get_offset(KERNEL_PID, info.modid, 0, ksceOledGetDDB_addr,
+                        (uintptr_t *)&ksceOledGetDDB);
+
+  if (res_offset3 < 0) {
+    LOG("[OLED] module_get_offset3: 0x%08X\n", res_offset3);
+  }
+
+  uint16_t supplier_id = 0;
+  uint16_t supplier_elective_data = 0;
+  if (ksceOledGetDDB != NULL) {
+    ret = ksceOledGetDDB(&supplier_id, &supplier_elective_data);
+    if (ret < 0) {
+      LOG("[OLED] cannot get DDB: 0x%08X\n", ret);
+    } else {
+      LOG("[OLED] supplier_id: 0x%04X, supplier_elective_data: 0x%04X\n", supplier_id, supplier_elective_data);
+    }
+  }
+
 
   if (ksceOledGetBrightness != NULL && ksceOledSetBrightness != NULL &&
       res_offset1 >= 0 && res_offset2 >= 0) {
