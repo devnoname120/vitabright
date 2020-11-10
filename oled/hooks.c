@@ -16,6 +16,7 @@ int (*ksceOledSetBrightness)(unsigned int brightness) = NULL;
 int (*ksceOledGetDDB)(uint16_t *supplier_id, uint16_t *supplier_elective_data) = NULL;
 
 static tai_hook_ref_t oled_set_brightness_ref = -1;
+static tai_hook_ref_t oled_get_ddb_ref = -1;
 
 int module_get_offset(SceUID pid, SceUID modid, int segidx, size_t offset,
                       uintptr_t *addr);
@@ -36,6 +37,15 @@ int hook_ksceOledSetBrightness(unsigned int brightness) {
   }
 
   return TAI_CONTINUE(int, oled_set_brightness_ref, brightness);
+}
+
+int hook_ksceOledGetDDB(uint16_t *supplier_id, uint16_t *supplier_elective_data) {
+  int ret = TAI_CONTINUE(int, oled_get_ddb_ref, supplier_id, supplier_elective_data);
+  if (supplier_elective_data != NULL) {
+    *supplier_elective_data = 0x0806;
+  }
+
+  return ret;
 }
 
 void oled_enable_hooks() {
@@ -134,6 +144,11 @@ void oled_enable_hooks() {
   }
 
   int res_hook = taiHookFunctionExportForKernel(KERNEL_PID, &oled_set_brightness_ref, "SceOled", TAI_ANY_LIBRARY, 0xF9624C47, hook_ksceOledSetBrightness);
+  if (res_hook < 0) {
+    LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", res_hook);
+  }
+
+  res_hook = taiHookFunctionExportForKernel(KERNEL_PID, &oled_get_ddb_ref, "SceOled", TAI_ANY_LIBRARY, 0xC9D5987C, hook_ksceOledGetDDB);
   if (res_hook < 0) {
     LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", res_hook);
   }
