@@ -1,6 +1,7 @@
 ﻿---
 BasedOnStyle: LLVM
-BreakBeforeBraces: Linux
-ColumnLimit: '100'
+BinPackArguments: false
+AllowShortFunctionsOnASingleLine: None
+ColumnLimit: 100
 
 ...
