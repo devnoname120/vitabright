@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from sys import argv
 import numpy
 
 MIN_VALUE = 1
 MAX_VALUE = 255
+
 
 def getPolynomial(lookup, deg):
     nRow = lookup.shape[0]
@@ -14,7 +14,7 @@ def getPolynomial(lookup, deg):
 
 def buildLookup(polynomial, lookup):
     # Find x1 and x2 such as f(x1) = 5 and f(x2) = 255 in order to have an interval
-    polynomial[2] = MIN_VALUE # Constant part of the polynomial
+    polynomial[2] = MIN_VALUE  # Constant part of the polynomial
 
     x1 = 0
     x2 = (numpy.poly1d(polynomial) - MAX_VALUE).roots[1]
@@ -43,7 +43,7 @@ def printLookup(lookup):
 if __name__ == '__main__':
     # Extracted from address of lcd.skprx (3.60) at address 0x1BA0
     lookup = numpy.array([31, 37, 43, 50, 58, 67, 77, 88,
-                          100, 114,	129, 147, 166, 182, 203, 227, 255])
+                          100, 114, 129, 147, 166, 182, 203, 227, 255])
 
     polynomial = getPolynomial(lookup, 2)
     buildLookup(polynomial, lookup)
