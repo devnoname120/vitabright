@@ -10,6 +10,8 @@
 #define LCD_DIMMED_VALUE 25
 
 static SceUID lcd_table_inject = -1;
+static SceUID lcd_set_brightness_hook = -1;
+
 static tai_hook_ref_t lcd_set_brightness_ref = -1;
 
 
@@ -137,13 +139,16 @@ void lcd_enable_hooks() {
     ksceLcdSetBrightness(ksceLcdGetBrightness());
   }
 
-  int res_hook = taiHookFunctionExportForKernel(KERNEL_PID, &lcd_set_brightness_ref, "SceLcd", TAI_ANY_LIBRARY, 0x581D3A87, hook_ksceLcdSetBrightness);
-  if (res_hook < 0) {
-    LOG("[LCD] taiHookFunctionExportForKernel: 0x%08X\n", res_hook);
+  lcd_set_brightness_hook = taiHookFunctionExportForKernel(KERNEL_PID, &lcd_set_brightness_ref, "SceLcd", TAI_ANY_LIBRARY, 0x581D3A87, hook_ksceLcdSetBrightness);
+  if (lcd_set_brightness_hook < 0) {
+    LOG("[LCD] taiHookFunctionExportForKernel: 0x%08X\n", lcd_set_brightness_hook);
   }
 }
 
 void lcd_disable_hooks() {
   if (lcd_table_inject >= 0)
     taiInjectReleaseForKernel(lcd_table_inject);
+
+  if (lcd_set_brightness_hook >= 0)
+    taiHookReleaseForKernel(lcd_set_brightness_hook, lcd_set_brightness_ref);
 }

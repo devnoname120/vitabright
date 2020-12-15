@@ -10,6 +10,7 @@
 
 static unsigned char lookupNew[LUT_SIZE] = {0};
 static SceUID lut_inject = -1;
+static SceUID oled_set_brightness_hook = -1;
 
 int (*ksceOledGetBrightness)() = NULL;
 int (*ksceOledSetBrightness)(unsigned int brightness) = NULL;
@@ -111,13 +112,16 @@ void oled_enable_hooks() {
     ksceOledSetBrightness(ksceOledGetBrightness());
   }
 
-  int res_hook = taiHookFunctionExportForKernel(KERNEL_PID, &oled_set_brightness_ref, "SceOled", TAI_ANY_LIBRARY, 0xF9624C47, hook_ksceOledSetBrightness);
-  if (res_hook < 0) {
-    LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", res_hook);
+  oled_set_brightness_hook = taiHookFunctionExportForKernel(KERNEL_PID, &oled_set_brightness_ref, "SceOled", TAI_ANY_LIBRARY, 0xF9624C47, hook_ksceOledSetBrightness);
+  if (oled_set_brightness_hook < 0) {
+    LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", oled_set_brightness_hook);
   }
 }
 
 void oled_disable_hooks() {
   if (lut_inject >= 0)
     taiInjectReleaseForKernel(lut_inject);
+
+  if (oled_set_brightness_hook >= 0)
+      taiHookReleaseForKernel(oled_set_brightness_hook, oled_set_brightness_ref);
 }
