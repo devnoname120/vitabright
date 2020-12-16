@@ -59,3 +59,11 @@ vita_create_self(vitabright.skprx vitabright
         UNSAFE
         )
 
+vita_create_stubs(vitabright-stubs vitabright module.yml
+        KERNEL
+        )
+
+install(DIRECTORY ${CMAKE_BINARY_DIR}/vitabright-stubs/
+        DESTINATION lib
+        FILES_MATCHING PATTERN "*.a"
+        )
