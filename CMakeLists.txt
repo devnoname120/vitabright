@@ -20,6 +20,8 @@ endif ()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-q -Wall -O3 -fno-pic -fno-PIC -std=gnu99")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions")
 
+set(NET_OBJS net/cmd.c net/cmd.h net/net.c net/net.h)
+
 include_directories(
 )
 
@@ -33,6 +35,7 @@ add_executable(vitabright
         oled/parser.c
         oled/hooks.c
         lcd/hooks.c
+        ${NET_OBJS}
         )
 
 
