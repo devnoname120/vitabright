@@ -37,6 +37,16 @@ int module_start(SceSize argc, const void *args) {
   return SCE_KERNEL_START_SUCCESS;
 }
 
+int vitabrightReload() {
+  oled_enable_hooks();
+  lcd_enable_hooks();
+
+  oled_disable_hooks();
+  lcd_disable_hooks();
+
+  return 0;
+}
+
 int module_stop(SceSize argc, const void *args) {
   oled_disable_hooks();
   lcd_disable_hooks();

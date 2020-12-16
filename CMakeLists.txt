@@ -55,7 +55,7 @@ set_target_properties(vitabright
         )
 
 vita_create_self(vitabright.skprx vitabright
+        CONFIG ${CMAKE_SOURCE_DIR}/module.yml
         UNSAFE
-        CONFIG ${CMAKE_SOURCE_DIR}/vitabright.yml
         )
 
