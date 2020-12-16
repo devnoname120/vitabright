@@ -38,11 +38,11 @@ int module_start(SceSize argc, const void *args) {
 }
 
 int vitabrightReload() {
-  oled_enable_hooks();
-  lcd_enable_hooks();
-
   oled_disable_hooks();
   lcd_disable_hooks();
+
+  oled_enable_hooks();
+  lcd_enable_hooks();
 
   return 0;
 }
