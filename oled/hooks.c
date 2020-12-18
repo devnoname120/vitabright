@@ -141,7 +141,13 @@ void oled_disable_hooks() {
 }
 
 // Exported as syscall.
-int vitabrightLoadOledLut(unsigned char oledLut[LUT_SIZE]) {
+int vitabrightGetOledLut(unsigned char oledLut[LUT_SIZE]) {
+  ksceKernelMemcpyKernelToUser((uintptr_t)oledLut, lookupNew, LUT_SIZE);
+
+  return 0;
+}
+
+int vitabrightSetOledLut(unsigned char oledLut[LUT_SIZE]) {
   oled_disable_hooks();
   ksceKernelMemcpyUserToKernel(lookupNew, (uintptr_t)oledLut, LUT_SIZE);
 
