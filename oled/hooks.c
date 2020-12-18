@@ -4,11 +4,12 @@
 #include "parser.h"
 #include <psp2kern/kernel/modulemgr.h>
 #include <taihen.h>
+#include <psp2kern/kernel/sysmem.h>
 
 // Required in order to jump to code that is in thumb mode
 #define THUMB_BIT 1
 
-static unsigned char lookupNew[LUT_SIZE] = {0};
+unsigned char lookupNew[LUT_SIZE] = {0};
 static SceUID lut_inject = -1;
 static SceUID oled_set_brightness_hook = -1;
 
@@ -20,6 +21,7 @@ static tai_hook_ref_t oled_set_brightness_ref = -1;
 int module_get_offset(SceUID pid, SceUID modid, int segidx, size_t offset, uintptr_t *addr);
 
 int ksceKernelSysrootGetSystemSwVersion(void);
+int oled_apply_lut();
 
 int hook_ksceOledSetBrightness(unsigned int brightness) {
   // Trying to dim screen after inactivity
@@ -44,18 +46,22 @@ void oled_enable_hooks() {
     return;
   }
 
+  oled_apply_lut();
+}
+
+int oled_apply_lut() {
   tai_module_info_t info;
   info.size = sizeof(tai_module_info_t);
-  ret = taiGetModuleInfoForKernel(KERNEL_PID, "SceOled", &info);
+  int ret = taiGetModuleInfoForKernel(KERNEL_PID, "SceOled", &info);
   LOG("[OLED] getmodninfo: 0x%08X\n", ret);
   LOG("[OLED] modid: 0x%08X\n", info.modid);
 
   if (ret < 0)
-    return;
+    return ret;
 
   if (sizeof(lookupNew) != LUT_SIZE) {
     LOG("[OLED] size mismatch! Skipping...\n");
-    return;
+    return -1;
   }
 
   LOG("[OLED] Size ok, hooking...\n");
@@ -79,7 +85,7 @@ void oled_enable_hooks() {
   }
   default: // Not supported
     LOG("[OLED] Unsupported OS version: 0x%08X\n", (unsigned int)sw_version);
-    return;
+    return -2;
   }
 
   LOG("[OLED] OS version: 0x%08X\n, table offset: 0x%08X, ksceOledGetBrightness_addr: 0x%08X, "
@@ -122,6 +128,8 @@ void oled_enable_hooks() {
   if (oled_set_brightness_hook < 0) {
     LOG("[OLED] taiHookFunctionExportForKernel: 0x%08X\n", oled_set_brightness_hook);
   }
+
+  return 0;
 }
 
 void oled_disable_hooks() {
@@ -130,4 +138,14 @@ void oled_disable_hooks() {
 
   if (oled_set_brightness_hook >= 0)
     taiHookReleaseForKernel(oled_set_brightness_hook, oled_set_brightness_ref);
+}
+
+// Exported as syscall.
+int vitabrightLoadOledLut(unsigned char oledLut[LUT_SIZE]) {
+  oled_disable_hooks();
+  ksceKernelMemcpyUserToKernel(lookupNew, (uintptr_t)oledLut, LUT_SIZE);
+
+  oled_apply_lut();
+
+  return 0;
 }
