@@ -1,6 +1,5 @@
-#include <psp2kern/io/fcntl.h>
+#include <psp2kern/kernel/cpu.h>
 #include <psp2kern/kernel/modulemgr.h>
-#include <psp2kern/kernel/sysmem.h>
 #include <taihen.h>
 
 #include "lcd/hooks.h"
@@ -39,11 +38,16 @@ int module_start(SceSize argc, const void *args) {
 
 // Exported as syscall.
 int vitabrightReload() {
+  int state;
+  ENTER_SYSCALL(state);
+
   oled_disable_hooks();
   lcd_disable_hooks();
 
   oled_enable_hooks();
   lcd_enable_hooks();
+
+  EXIT_SYSCALL(state);
 
   return 0;
 }

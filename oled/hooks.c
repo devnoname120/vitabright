@@ -2,9 +2,10 @@
 #include "../log.h"
 #include "lut.h"
 #include "parser.h"
+#include <psp2kern/kernel/cpu.h>
 #include <psp2kern/kernel/modulemgr.h>
-#include <taihen.h>
 #include <psp2kern/kernel/sysmem.h>
+#include <taihen.h>
 
 // Required in order to jump to code that is in thumb mode
 #define THUMB_BIT 1
@@ -142,16 +143,23 @@ void oled_disable_hooks() {
 
 // Exported as syscall.
 int vitabrightGetOledLut(unsigned char oledLut[LUT_SIZE]) {
+  int state;
+  ENTER_SYSCALL(state);
   ksceKernelMemcpyKernelToUser((uintptr_t)oledLut, lookupNew, LUT_SIZE);
 
+  EXIT_SYSCALL(state);
   return 0;
 }
 
 int vitabrightSetOledLut(unsigned char oledLut[LUT_SIZE]) {
+  int state;
+  ENTER_SYSCALL(state);
+
   oled_disable_hooks();
   ksceKernelMemcpyUserToKernel(lookupNew, (uintptr_t)oledLut, LUT_SIZE);
 
   oled_apply_lut();
 
+  EXIT_SYSCALL(state);
   return 0;
 }
