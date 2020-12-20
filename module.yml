@@ -11,5 +11,7 @@ vitabright:
       syscall: true
       functions:
         - vitabrightReload
-        - vitabrightGetOledLut
-        - vitabrightSetOledLut
+        - vitabrightOledGetLevel
+        - vitabrightOledSetLevel
+        - vitabrightOledGetLut
+        - vitabrightOledSetLut

@@ -24,6 +24,8 @@ int module_get_offset(SceUID pid, SceUID modid, int segidx, size_t offset, uintp
 int ksceKernelSysrootGetSystemSwVersion(void);
 int oled_apply_lut();
 
+int isDimmingWorkAround = 1;
+
 int hook_ksceOledSetBrightness(unsigned int brightness) {
   // Trying to dim screen after inactivity
   if (brightness == 1) {
@@ -31,7 +33,7 @@ int hook_ksceOledSetBrightness(unsigned int brightness) {
 
     // HACK: In modified vitabright_lut.txt, it corresponds to the line of screen dimmed after
     // inactivity
-    if (old_level <= 16384) {
+    if (isDimmingWorkAround && old_level <= 16384) {
       // Do nothing because it would increase brightness
       return TAI_CONTINUE(int, oled_set_brightness_ref, old_level);
     }
@@ -141,8 +143,58 @@ void oled_disable_hooks() {
     taiHookReleaseForKernel(oled_set_brightness_hook, oled_set_brightness_ref);
 }
 
-// Exported as syscall.
-int vitabrightGetOledLut(unsigned char oledLut[LUT_SIZE]) {
+/*
+ * Syscall exports.
+ */
+
+int vitabrightOledGetLevel() {
+  int state;
+  ENTER_SYSCALL(state);
+  int brightness = ksceOledGetBrightness();
+
+  int level;
+  if (brightness == 0) {
+    level = -1;
+  } else if (brightness == 1) {
+    level = 16;
+  } else if (brightness < 0x1000) {
+    level = 15;
+  } else if (brightness >= 0x10000) {
+    level = 0;
+  } else {
+    level = 16 - ((brightness + 0x1000) / 0x1000);
+  }
+
+  EXIT_SYSCALL(state);
+  return level;
+}
+
+int vitabrightOledSetLevel(unsigned int level) {
+  int state;
+  ENTER_SYSCALL(state);
+
+  unsigned int brightness = 0;
+  if (level > 16) {
+    brightness = 0;
+  } else if (level == 16) {
+    brightness = 1;
+  } else if (level == 15) {
+    brightness = 0xfff;
+  } else if (level == 0) {
+    brightness = 0x10000;
+  } else {
+    brightness = 0x1000 * (16 - level) - 0x1000;
+  }
+
+  isDimmingWorkAround = 0;
+  ksceOledSetBrightness(brightness);
+  isDimmingWorkAround = 1;
+
+  EXIT_SYSCALL(state);
+  return level;
+}
+
+int vitabrightOledGetLut(unsigned char oledLut[LUT_SIZE]) {
   int state;
   ENTER_SYSCALL(state);
   ksceKernelMemcpyKernelToUser((uintptr_t)oledLut, lookupNew, LUT_SIZE);
@@ -151,7 +203,7 @@ int vitabrightGetOledLut(unsigned char oledLut[LUT_SIZE]) {
   return 0;
 }
 
-int vitabrightSetOledLut(unsigned char oledLut[LUT_SIZE]) {
+int vitabrightOledSetLut(unsigned char oledLut[LUT_SIZE]) {
   int state;
   ENTER_SYSCALL(state);
 

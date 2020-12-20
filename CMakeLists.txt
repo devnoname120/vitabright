@@ -67,3 +67,10 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/vitabright-stubs/
         DESTINATION lib
         FILES_MATCHING PATTERN "*.a"
         )
+
+set(PSVITAIP 192.168.1.10)
+
+add_custom_target(send
+        COMMAND curl --ftp-method nocwd -T vitabright.skprx ftp://${PSVITAIP}:1337/ur0:/tai/vitabright.skprx
+        DEPENDS vitabright.skprx
+        )
