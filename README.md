@@ -27,6 +27,8 @@ Use this tool: https://github.com/devnoname120/vitabright-lut-editor/releases/la
 
 ![](https://user-images.githubusercontent.com/2824100/102720568-760e4700-42f5-11eb-9ba2-f2cea8ce6cd6.png)
 
+**Please share your improved `vitabright_lut.txt` file by [opening an issue](https://github.com/devnoname120/vitabright/issues/new)!**
+
 ## OLED gamma table explanations
 
 https://github.com/devnoname120/vitabright/wiki/What-is-the-format-of-the-OLED-gamma-table%3F
