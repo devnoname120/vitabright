@@ -21,6 +21,12 @@ Vitabright is a plugin enabling you to alter the luminosity levels of your PS Vi
 
 **Important note**: If you want to use FileZilla for transferring the file `vitabright_lut.txt`, you'll first need to [change the transfer type from `Auto` to `Binary`](https://stackoverflow.com/a/555003) or it can prevent vitabright from parsing it correctly.
 
+## How can I edit the OLED gamma table?
+
+Use this tool: https://github.com/devnoname120/vitabright-lut-editor/releases/latest
+
+![](https://user-images.githubusercontent.com/2824100/102720568-760e4700-42f5-11eb-9ba2-f2cea8ce6cd6.png)
+
 ## OLED gamma table explanations
 
 https://github.com/devnoname120/vitabright/wiki/What-is-the-format-of-the-OLED-gamma-table%3F
