@@ -145,7 +145,7 @@ int oled_apply_lut() {
         break;
     }
 
-    LOG("[OLED] LUT table start address: OS version: 0x%08X\n",
+    LOG("[OLED] LUT table start address: 0x%08X\n",
         (unsigned int)oled_lut_off);
 
     lut_inject =
