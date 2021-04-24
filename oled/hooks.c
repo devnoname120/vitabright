@@ -126,15 +126,11 @@ int oled_apply_lut() {
     // Get table offset for type
     uint16_t supplier_id = 0;
     uint16_t supplier_elective_data = 0;
-    ksceOledGetDDB(&supplier_id, &supplier_elective_data);
-
-    if (ksceOledGetDDB != NULL) {
-      ret = ksceOledGetDDB(&supplier_id, &supplier_elective_data);
-      if (ret < 0) {
-        LOG("[OLED] cannot get DDB: 0x%08X\n", ret);
-      } else {
-        LOG("[OLED] supplier_id: 0x%04X, supplier_elective_data: 0x%04X\n", supplier_id, supplier_elective_data);
-      }
+    ret = ksceOledGetDDB(&supplier_id, &supplier_elective_data);
+    if (ret < 0) {
+      LOG("[OLED] cannot get DDB: 0x%08X\n", ret);
+    } else {
+      LOG("[OLED] supplier_id: 0x%04X, supplier_elective_data: 0x%04X\n", supplier_id, supplier_elective_data);
     }
 
     switch(supplier_elective_data & 0xFF) {
