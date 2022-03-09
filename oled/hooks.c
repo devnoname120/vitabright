@@ -93,8 +93,8 @@ int oled_apply_lut() {
     return -2;
   }
 
-  LOG("[OLED] OS version: 0x%08X\n, ksceOledGetBrightness_addr: 0x%08X, "
-    "ksceOledSetBrightness_addr: 0x%08X, ksceOledGetDDB_addr: 0x%08X\n",
+  LOG("OS version: 0x%08X\nksceOledGetBrightness_addr: 0x%08X\n"
+    "[OLED] ksceOledSetBrightness_addr: 0x%08X\n[OLED] ksceOledGetDDB_addr: 0x%08X\n",
       sw_version,
       ksceOledGetBrightness_addr,
       ksceOledSetBrightness_addr,
