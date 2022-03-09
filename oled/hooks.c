@@ -232,7 +232,7 @@ int vitabrightOledSetLevel(unsigned int level) {
 int vitabrightOledGetLut(unsigned char oledLut[LUT_SIZE]) {
   int state;
   ENTER_SYSCALL(state);
-  ksceKernelMemcpyKernelToUser((uintptr_t)oledLut, lookupNew, LUT_SIZE);
+  ksceKernelMemcpyKernelToUser((void *)oledLut, lookupNew, LUT_SIZE);
 
   EXIT_SYSCALL(state);
   return 0;
@@ -243,7 +243,7 @@ int vitabrightOledSetLut(unsigned char oledLut[LUT_SIZE]) {
   ENTER_SYSCALL(state);
 
   oled_disable_hooks();
-  ksceKernelMemcpyUserToKernel(lookupNew, (uintptr_t)oledLut, LUT_SIZE);
+  ksceKernelMemcpyUserToKernel(lookupNew, (void *)oledLut, LUT_SIZE);
 
   oled_apply_lut();
 
