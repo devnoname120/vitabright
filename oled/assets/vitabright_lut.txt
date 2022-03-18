@@ -1,23 +1,24 @@
 # This is a modified gamma table, more information here: https://github.com/devnoname120/vitabright/wiki/What-is-the-format-of-the-OLED-gamma-table%3F
-# Five Extra Bright Custom Values, Including Maximum Capable Brightness Of The Screen
+# Four Extra Bright Custom Values, Including Maximum Capable Brightness Of The Screen
 D8 DA FF BA C2 B2 BF C8 B8 E1 E5 DE D4 CE D3 FA ED E6 2F 00 2F
-CA CB EE C1 C9 B9 BF C8 B8 E1 E5 DE D4 CE D3 FA ED E6 2F 00 2F
-C1 C2 E5 C1 C9 B8 BF C8 B8 E1 E5 DE D4 CE D3 FA ED E6 2F 00 2F
-B6 B7 D8 C5 CD BD BF C8 B8 E1 E5 DE D4 CE D3 FA ED E6 2F 00 2F
-AA AA C9 CC D5 C7 C0 C9 B9 E1 E3 DE D4 CE D3 FA ED E6 2F 00 2F
-# Games that set the CPU freq to 444 Mhz will only make the below values usable
-# Six Values Taken From The Default Slider, Including Default Brightest, Default Darkest, & Every Third Value Between
+C5 C6 E9 C5 CD BC BE C7 BA DF E3 D7 D4 CE D3 FA ED E6 2F 00 2F
+B8 B8 DA C7 D0 BF BF C7 B9 E1 E5 DB D4 CE D3 FA ED E6 2F 00 2F
+AA AA C9 CC D5 C7 C0 C8 B9 E1 E3 DB D4 CE D3 FA ED E6 2F 00 2F
+# The Bellow Five Values Were Taken From The Default Slider, Including The Default Brightest, And The Default Dimmest
 9F 9F BE CF D7 C9 C2 CB BB E1 E3 DE D6 D0 D3 FA ED E6 2F 00 2F
-95 95 B1 D2 D9 CC C4 CD BE E2 E3 DF D7 CC D3 FA ED E6 2F 00 2F
-8F 8F AA D4 DB CE C6 CD BF E3 E3 E1 D7 CA D3 FA ED E6 2F 00 2F
+# Games that set the CPU freq to 444 Mhz will only make the below values usable
+# The Bellow Value Is The Same Default Maximum Brightest Available On 444 Mhz Games
+91 91 AC D3 DA CE C5 CD BE E3 E3 E0 D7 CA D3 FA ED E6 2F 00 2F
 89 89 A2 D5 DB CF C8 CF C2 E3 E3 E1 D9 C7 D3 FA ED E6 2F 00 2F
 82 81 99 D6 DD D1 CA CF C3 E4 E3 E3 DA C2 D3 FA ED E6 2F 00 2F
 79 78 8D D9 DF D5 CB CF C5 E5 E0 E4 DC B8 D4 FA ED E6 2F 00 2F
-# Five Extra Dark Custom Values, Including Darkest Before Screen Loses Too Much Contrast & Colour
-72 71 84 E3 DF E0 DC D0 D7 E5 BF E4 E5 00 E8 F2 00 F2 00 00 00
-69 68 7A E4 DF E1 E0 D1 DC E7 B5 E7 E5 00 E8 00 00 00 00 00 00
-62 61 71 E7 E0 E7 E1 D2 E0 E6 A7 E5 E5 00 E8 00 00 00 00 00 00
-57 55 66 E9 E0 E8 E9 CF E7 E5 75 E3 00 00 00 00 00 00 00 00 00
-4D 48 5B EB DF EE EA C7 E9 F8 BA F3 00 00 00 00 00 00 00 00 00
+# Seven Extra Dim Custom Values, Including Dimmest Before Screen Loses Too Much Contrast & Colour
+72 71 84 E3 DF E0 DB D1 D7 E2 CA DE E6 57 D0 DD 00 00 00 00 00
+68 67 79 E4 DF E1 DE D1 DC E3 BC DC E7 00 4E 98 00 00 00 00 00
+5F 5E 6E E7 E0 E6 E1 D0 DE E1 AD E0 C4 00 00 00 00 00 00 00 00
+57 55 66 E9 E1 E8 E7 D5 E4 E5 9F DE C6 00 00 00 00 00 00 00 00
+51 4E 5F EB E4 EC EA D4 E7 E9 8B E1 BF 00 00 00 00 00 00 00 00
+4D 49 5B EB E1 EB EA CF E9 E6 22 D9 B7 00 00 00 00 00 00 00 00
+48 43 56 F0 E4 EE EA CC EC DF 00 E2 B7 00 00 00 00 00 00 00 00
 # Not On Slider
-4D 48 5B EB DF EE EA C7 E9 F8 BA F3 00 00 00 00 00 00 00 00 00
+48 43 56 F0 E4 EE EA CC EC DF 00 E2 B7 00 00 00 00 00 00 00 00
