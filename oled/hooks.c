@@ -1,4 +1,5 @@
 #include "hooks.h"
+#include "../main.h"
 #include "../log.h"
 #include "lut.h"
 #include "parser.h"
@@ -9,6 +10,9 @@
 
 // Required in order to jump to code that is in thumb mode
 #define THUMB_BIT 1
+
+static SceUID power_set_max_brightness_hook = -1;
+static tai_hook_ref_t power_set_max_brightness_ref = 0;
 
 unsigned char lookupNew[LUT_SIZE] = {0};
 static SceUID lut_inject = -1;
@@ -22,7 +26,6 @@ static tai_hook_ref_t oled_set_brightness_ref = -1;
 
 int module_get_offset(SceUID pid, SceUID modid, int segidx, size_t offset, uintptr_t *addr);
 
-int ksceKernelSysrootGetSystemSwVersion(void);
 int oled_apply_lut();
 
 int isDimmingWorkAround = 1;
@@ -32,15 +35,31 @@ int hook_ksceOledSetBrightness(unsigned int brightness) {
   if (brightness == 1) {
     int old_level = ksceOledGetBrightness();
 
-    // HACK: In modified vitabright_lut.txt, it corresponds to the line of screen dimmed after
-    // inactivity
-    if (isDimmingWorkAround && old_level <= 16384) {
-      // Do nothing because it would increase brightness
+    // Corresponds to the line of screen dimmed after inactivity
+    if (isDimmingWorkAround && old_level <= 4*0x1000) {
+      // Do nothing because it would increase the brightness
       return TAI_CONTINUE(int, oled_set_brightness_ref, old_level);
     }
   }
 
   return TAI_CONTINUE(int, oled_set_brightness_ref, brightness);
+}
+
+int hook_kscePowerSetDisplayMaxBrightnessForOled(int limit) {
+  // Workaround for https://github.com/yifanlu/taiHEN/issues/12
+  if (power_set_max_brightness_ref == 0) {
+    return 0;
+  }
+
+  // Request to limit the brightness slider below the max.
+  if (limit < 0x10000 && limit >= 0) {
+    // Exclude the last two brightness levels on max performance mode because the PS Vita crashes.
+    limit = 0x10000 - 2*0x1000;
+  } else {
+    limit = 0x10000;
+  }
+
+  return TAI_CONTINUE(int, power_set_max_brightness_ref, limit);
 }
 
 void oled_enable_hooks() {
@@ -54,17 +73,24 @@ void oled_enable_hooks() {
 }
 
 int oled_apply_lut() {
+  // Reduce max brightness limit when PS Vita is running in power mode C/D.
+  // Don't entirely remove this limit because the PS Vita crashes on the two highest levels.
+  power_set_max_brightness_hook = taiHookFunctionExportForKernel(KERNEL_PID, &power_set_max_brightness_ref, "ScePower", TAI_ANY_LIBRARY, 0x77027B6B, hook_kscePowerSetDisplayMaxBrightnessForOled);
+  LOG("[OLED] hooking kscePowerSetDisplayMaxBrightness: 0x%08X\n", power_set_max_brightness_hook);
+
   tai_module_info_t info;
   info.size = sizeof(tai_module_info_t);
   int ret = taiGetModuleInfoForKernel(KERNEL_PID, "SceOled", &info);
-  LOG("[OLED] getmodninfo: 0x%08X\n", ret);
-  LOG("[OLED] modid: 0x%08X\n", info.modid);
+  LOG("[OLED] getmodninfo(\"SceOled\"): 0x%08X\n", ret);
+  LOG("[OLED] SceOled modid: 0x%08X\n", info.modid);
 
-  if (ret < 0)
+  if (ret < 0) {
+    LOG("[OLED] Couldn't get SceOled module id! Abandoning...\n");
     return ret;
+  }
 
   if (sizeof(lookupNew) != LUT_SIZE) {
-    LOG("[OLED] size mismatch! Skipping...\n");
+    LOG("[OLED] size mismatch! Abandoning...\n");
     return -1;
   }
 
@@ -75,7 +101,6 @@ int oled_apply_lut() {
   size_t ksceOledSetBrightness_addr = 0;
   size_t ksceOledGetDDB_addr = 0;
 
-  unsigned int sw_version = ksceKernelSysrootGetSystemSwVersion();
   switch (sw_version >> 16) {
   case 0x360:
   case 0x365:
@@ -103,14 +128,14 @@ int oled_apply_lut() {
   int res_offset1 = module_get_offset(
       KERNEL_PID, info.modid, 0, ksceOledGetBrightness_addr, (uintptr_t *)&ksceOledGetBrightness);
   if (res_offset1 < 0) {
-    LOG("[OLED] module_get_offset1: 0x%08X\n", res_offset1);
+    LOG("[OLED] module_get_offset(\"ksceOledGetBrightness\"): 0x%08X\n", res_offset1);
   }
 
   int res_offset2 = module_get_offset(
       KERNEL_PID, info.modid, 0, ksceOledSetBrightness_addr, (uintptr_t *)&ksceOledSetBrightness);
 
   if (res_offset2 < 0) {
-    LOG("[OLED] module_get_offset2: 0x%08X\n", res_offset2);
+    LOG("[OLED] module_get_offset(\"ksceOledSetBrightness\"): 0x%08X\n", res_offset1);
   }
   
   int res_offset3 = module_get_offset(
