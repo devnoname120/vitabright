@@ -1,4 +1,4 @@
-# This is the original unmodified gamma table that the vita uses
+# This is the original unmodified gamma table that the vita uses for all OLED models except 4 and 5
 # Lines starting with '#' are comments
 # There should be exactly 17 lines excluding comment lines
 9F 9F BE CF D7 C9 C2 CB BB E1 E3 DE D6 D0 D3 FA ED E6 2F 00 2F
